@@ -1,0 +1,111 @@
+go:-
+hypothesis(Disease),
+write('I believe that the patient have '),
+write(Disease),
+nl,
+write('TAKE CARE '),
+undo.
+/*Hypothesis that should be tested*/
+hypothesis(heart_attack) :- heart_attack, !.
+hypothesis(angina) :- angina,!.
+hypothesis(arrhythmia) :- arrhythmia,!.
+hypothesis(valve_disease) :- valve_disease,!.
+hypothesis(unknown). /* no diagnosis*/
+/*Hypothesis Identification Rules*/
+heart_attack:-
+verify(chest_pain),
+verify(shortness_of_breath),
+verify(feeling_nauseous),
+verify(light_headed),
+write('Advices and Sugestions: '),
+nl,
+write('1:Morphine/tab'),
+nl,
+write('2:Beta Blockers/tab'),
+nl,
+write('3:Statins/tab'),
+nl,
+write('Call 999 and ask for an ambulance if you suspect a heart attack'),
+nl.
+angina:-
+verify(squeezing),
+verify(pressure),
+verify(heaviness),
+verify(pain),
+write('Advices and Sugestions:'),
+nl,
+write('1: Aspirin/tab'),
+nl,
+write('2: Statins/tab'),
+nl,
+write('3: Ranolazine/tab'),
+nl,
+write('4: Nitrates/tab'),
+nl,
+write('having balanced diet'),
+nl.
+
+arrhythmia :-
+verify(palpitations),
+verify(dizziness),
+verify(short_of_breath),
+verify(fainting),
+write('Advices and Sugestions:'),
+nl,
+write('1: Atenolol/tab'),
+nl,
+write('2: Bisprolol/tab'),
+nl,
+write('3: metoprolol/tab'),
+nl,
+write('4: Amidorane'),
+nl,
+write('Maintain a healthy weight'),
+nl.
+
+valve_disease :-
+verify(chest_pain),
+verify(fatigue),
+verify(diziness),
+verify(swelling),
+verify(fainting),
+verify(shortness_of_breath),
+write('Advices and Sugestions:'),
+nl,
+write('1: Beta Blocker/tab'),
+nl,
+write('2: Digoxin/tab'),
+nl,
+write('3: Calcium Channel Blocker/tab'),
+nl,
+write('4: Anorexigens'),
+nl,
+write('Please take a balanced diet'),
+nl.
+
+/* how to ask questions */
+ask(Question) :-
+write('Does the patient have following symptom:'),
+write(Question),
+write('? '),
+read(Response),
+nl,
+( (Response == yes ; Response == y)
+->
+assert(yes(Question));
+assert(no(Question)), fail).
+:- dynamic yes/1,no/1.
+/*How to verify something*/
+verify(S) :-
+
+(yes(S)
+->
+true ;
+(no(S)
+->
+fail ;
+ask(S))).
+/* undo all yes/no assertions*/
+undo :- retract(yes(_)),fail.
+undo :- retract(no(_)),fail.
+undo.
